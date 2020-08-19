@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+#set -x
+
+# Set magic variables for current file & dir
+__dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+__file="${__dir}/$(basename "${BASH_SOURCE[0]}")"
+__base="$(basename ${__file} .sh)"
+
+
+#Ustawienie zmiennych do logowania TODO - zrobic z tego przekazywanie parametru do skryptu
+
+TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
+DATE=$(date "+%Y-%m-%d")
+INFO=1
+ERROR=1
+LOG_ERROR=1
+LOG_INFO=1
+LOG_DEBUG=1
+DEBUG=1
+LOG_FILE="${__dir}/${DATE}.log"
+
+
+function error_exit() {
+ line=$1
+ echo  “ERROR: non zero return code from line: "${line}" — "${2}"”
+ exit 1
+}
+
+function __msg_error() {
+    [[ "${ERROR}" == "1" ]] && echo -e "[ERROR]: $*"
+    [[ "${LOG_ERROR}" == "1" ]] && echo -e "${TIMESTAMP}" "[ERROR]: $*" >> "${LOG_FILE}"
+}
+
+function __msg_debug() {
+    [[ "${DEBUG}" == "1" ]] && echo -e "[DEBUG]: $*"
+    [[ "${LOG_DEBUG}" == "1" ]] && echo -e "${TIMESTAMP}" "[DEBUG]: $*" >> "${LOG_FILE}"
+}
+
+function __msg_info() {
+    [[ "${INFO}" == "1" ]] && echo -e "[INFO]: $*"
+    [[ "${LOG_INFO}" == "1" ]] && echo -e "${TIMESTAMP}" "[INFO]: $*" >> "${LOG_FILE}"
+}
+
